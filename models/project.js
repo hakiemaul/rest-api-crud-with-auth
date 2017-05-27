@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var eventSchema = new Schema ({
-  name; {
+  name: {
     type: String,
     required: [true, 'Please enter your project\'s name.']
   },

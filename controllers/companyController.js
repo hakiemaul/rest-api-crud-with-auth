@@ -14,9 +14,20 @@ var get = function(req, res) {
 }
 
 var create = function(req, res) {
-  Company.create(req.body, (err, company) => {
-    if(err) res.send(err.errors)
-    res.send(company)
+  var salt = bcrypt.genSaltSync(saltRounds);
+  var hash = bcrypt.hashSync(req.body.password, salt);
+
+  var newCompany = new Company({
+    name: req.body.name,
+    email: req.body.email,
+    password: hash,
+    employee: req.body.employee,
+    role: req.body.role
+  })
+  newCompany.save((err, company) => {
+    if(err) {
+      res.send(err.errors)
+    } else res.send(company)
   })
 }
 

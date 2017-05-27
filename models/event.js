@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var eventSchema = new Schema ({
-  name; {
+  name: {
     type: String,
     required: [true, 'Please enter your event\'s name.']
   },
@@ -10,16 +10,13 @@ var eventSchema = new Schema ({
     type: String,
     minlength: [10, 'Please enter a descriptive description.']
   },
-  date_created: {
-    type: Date,
-    default: Date.now
-  },
+  date_created: Date,
   due_date: {
     type: Date,
     required: [true, 'Please enter your event\'s date']
   },
   company_participant: [{
-    type: String, ref: 'Company'
+    type: Schema.Types.ObjectId, ref: 'Company'
   }]
 })
 
