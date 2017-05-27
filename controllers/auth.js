@@ -2,7 +2,7 @@ require('dotenv').config();
 const sec = process.env.TOKEN_SECRET;
 const saltRounds = Number(process.env.SALT_ROUNDS);
 
-var company = require('../models/company');
+var Company = require('../models/company');
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
@@ -12,27 +12,32 @@ mongoose.connect('mongodb://localhost/compalink');
 var login = function(req, res, next) {
   let email = req.body.email;
   let password = req.body.password;
+  let token = req.headers.token;
 
-  company.findOne({ email: email }, function(err, company) {
-    if(err) res.send(err);
-    bcrypt.compare(password, company.password)
-    .then(result => {
-      if(result) {
-        var token = jwt.sign({id: company.id, name: company.name, role: company.role }, sec);
-        res.send(token);
-      } else {
-        res.send('Password salah');
-      }
+  if(!token) {
+    Company.findOne({ email: email }, function(err, company) {
+      if(err) res.send(err);
+      bcrypt.compare(password, company.password)
+      .then(result => {
+        if(result) {
+          var token = jwt.sign({id: company.id, name: company.name, role: company.role }, sec);
+          res.send(token);
+        } else {
+          res.send('Password salah');
+        }
+      })
+      .catch(err => console.log(err))
     })
-    .catch(err => console.log(err))
-  })
+  } else {
+    res.send('You already have a token!')
+  }
 }
 
 var signup = function(req, res, next) {
   var salt = bcrypt.genSaltSync(saltRounds);
   var hash = bcrypt.hashSync(req.body.password, salt)
 
-  var newCompany = new company({
+  var newCompany = new Company({
     name: req.body.name,
     email: req.body.email,
     password: hash,
