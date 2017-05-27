@@ -10,17 +10,14 @@ var eventSchema = new Schema ({
     type: String,
     minlength: [10, 'Please enter a descriptive description.']
   },
-  date_started: {
-    type: Date,
-    default: Date.now
-  },
+  date_started: Date,
   days: {
     type: Number,
     required: [true, 'Enter the estimated project length (in days).']
   },
   due_date: Date,
   creator: {
-    type: String, ref: 'Company'
+    type: Schema.Types.ObjectId, ref: 'Company'
   }
 })
 
