@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var companySchema = new Schema ({
-  name; {
+  name: {
     type: String,
     required: [true, 'Please enter your company name.']
   },
@@ -16,6 +16,7 @@ var companySchema = new Schema ({
     minlength: [8, 'Minimal password length is 8']
   },
   employee: Number,
+  role: String,
   project: [{
     type: Schema.Types.ObjectId, ref: 'Project'
   }],
