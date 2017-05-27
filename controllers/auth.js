@@ -10,8 +10,8 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/compalink');
 
 var login = function(req, res, next) {
-  let email = req.body.email;
-  let password = req.body.password;
+  var email = req.body.email;
+  var password = req.body.password;
   let token = req.headers.token;
 
   if(!token) {
@@ -35,21 +35,26 @@ var login = function(req, res, next) {
 
 var signup = function(req, res, next) {
   var salt = bcrypt.genSaltSync(saltRounds);
-  var hash = bcrypt.hashSync(req.body.password, salt)
+  var hash = bcrypt.hashSync(req.body.password, salt);
+  let token = req.headers.token;
 
   var newCompany = new Company({
     name: req.body.name,
     email: req.body.email,
     password: hash,
     employee: req.body.employee,
-    role: 'user',
-    project: req.body.project
+    role: 'user'
   })
-  newCompany.save((err, company) => {
-    if(err) {
-      res.send(err.errors)
-    } else res.send(company)
-  })
+
+  if(!token) {
+    newCompany.save((err, company) => {
+      if(err) {
+        res.send(err.errors)
+      } else res.send(company)
+    })
+  } else {
+    res.send('You already have a token')
+  }
 }
 
 var adminOnly = function(req, res, next) {
